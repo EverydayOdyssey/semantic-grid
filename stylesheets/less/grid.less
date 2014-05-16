@@ -37,19 +37,28 @@ body {
 	.clearfix;
 }
 
-.calculate-grid-widths() {
+.calculate-grid-widths(@fluid:true; @columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width) {
+    // Utility variable — you should never need to modify this
+    @gridsystem-width: (@column-width*@columns) + (@gutter-width*@columns) * 1px;
+    
+    // Set @total-width to the gridsystem-width
+    @total-width: @gridsystem-width;
+}
+
+.calculate-grid-widths(@fluid:true; @columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width) when (@fluid = true) {
     // Utility variable — you should never need to modify this
     @gridsystem-width: (@column-width*@columns) + (@gutter-width*@columns) * 1px;
     
     // Set @total-width to 100% for a fluid layout
-    @total-width: @gridsystem-width;
+    @total-width: 100%;
 }
 
-.row(@columns:@columns) {
+
+.row(@columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width) {
 	display: block;
 	
 	//Fix for allowing reseting gutters
-	.calculate-grid-widths();
+	.calculate-grid-widths(@columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width);
 	
 	width: @total-width*((@gutter-width + @gridsystem-width)/@gridsystem-width);
 	margin: 0 @total-width*(((@gutter-width*.5)/@gridsystem-width)*-1);
@@ -57,21 +66,29 @@ body {
 	// *margin: 0 @total-width*(((@gutter-width*.5)/@gridsystem-width)*-1)-@correction;
 	.clearfix;
 }
-.column(@x,@columns:@columns) {
+.column(@x:@x; @columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width) {
 	display: inline;
 	float: left;
 	
 	//Fix for allowing reseting gutters
-	.calculate-grid-widths();
+	.calculate-grid-widths(@columns:@columns; @column-width: @column-width; @gutter-width: @gutter-width);
 	
 	width: @total-width*((((@gutter-width+@column-width)*@x)-@gutter-width) / @gridsystem-width);
 	margin: 0 @total-width*((@gutter-width*.5)/@gridsystem-width);
 	// *width: @total-width*((((@gutter-width+@column-width)*@x)-@gutter-width) / @gridsystem-width)-@correction;
 	// *margin: 0 @total-width*((@gutter-width*.5)/@gridsystem-width)-@correction;
 }
-.push(@offset:1) {
+.push(@offset:1; @column-width: @column-width; @gutter-width: @gutter-width) {
+
+    //Fix for allowing reseting gutters
+	.calculate-grid-widths(@column-width: @column-width; @gutter-width: @gutter-width);
+	
 	margin-left: @total-width*(((@gutter-width+@column-width)*@offset) / @gridsystem-width) + @total-width*((@gutter-width*.5)/@gridsystem-width);
 }
-.pull(@offset:1) {
+.pull(@offset:1; @column-width: @column-width; @gutter-width: @gutter-width) {
+
+    //Fix for allowing reseting gutters
+	.calculate-grid-widths(@column-width: @column-width; @gutter-width: @gutter-width);
+	
 	margin-right: @total-width*(((@gutter-width+@column-width)*@offset) / @gridsystem-width) + @total-width*((@gutter-width*.5)/@gridsystem-width);
 }
